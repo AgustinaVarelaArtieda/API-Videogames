@@ -1,13 +1,12 @@
 const axios=require('axios')
 
-
 //Realizo las peticiones de los juegos a la API
-const games_API=(id)=>{
+const games_API=async(id)=>{
     return 
 }
 
 //Realizo las peticiones de los juegos guardados en la DB
-const games_DB=(id)=>{
+const games_DB=async(id)=>{
     return 
 }
 
