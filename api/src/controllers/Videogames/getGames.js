@@ -36,7 +36,7 @@ const getNGamesFromAPI=async(num,name)=>{    //recibo el numero de juegos que se
     return info; //devuelvo un array de objetos con todos los juegos que se solicitan de la API
 }
 
-//Realizo la peticion de traer los juegos de la API y de la base de datos, si rebibe un name, trae solo los coincidentes
+//Realizo la peticion de traer los juegos de la API y de la base de datos, si rebibe un name, trae solo los primeros 15 coincidentes
 const getAllVideogames=async(name)=>{
 
     let [resDB, resAPI]=await Promise.all([      //guardo todos los juegos en un ARRAY
