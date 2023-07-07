@@ -12,4 +12,5 @@ const router = Router();
 router.use('/videogames',gameRoute)
 router.use('/genres',genreRoute)
 
+
 module.exports = router;
