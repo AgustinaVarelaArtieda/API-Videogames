@@ -21,6 +21,7 @@ const games_API=async(id)=>{
             rating:data.rating,
             genres:data.genres?.map(el=>el.name)
         }
+        
     return gameInfo;
 }
 
