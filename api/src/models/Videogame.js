@@ -34,10 +34,5 @@ module.exports = (sequelize) => {
       type: DataTypes.FLOAT,
       allowNull: false,
     },
-    // createdInDb: {      //para videojuegos creados en la base de datos
-    //   type: DataTypes.BOOLEAN,
-    //   allowNull: false,
-    //   defaultValue: true
-    // }
   }, {timestamps:false});
 };
