@@ -1,14 +1,14 @@
-const {videogamesByName, getAllVideogames}=require('../controllers/Videogames/getVideogames')
+const {getAllVideogames}=require('../controllers/Videogames/getGames')
 
-const {games_API, games_DB}=require('../controllers/Videogames/getVideogameById')
+const {games_API, games_DB}=require('../controllers/Videogames/videogameById')
 
-const createVideogame=require('../controllers/Videogames/postVideogame')
+const createVideogame=require('../controllers/Videogames/newVideogame')
 
 const getVideogames=async(req,res)=>{
     const {name}=req.query      //por si se recibe un name por query
 
     try {
-        const aux= name ? await videogamesByName(name): await getAllVideogames()
+        const aux= name? await getAllVideogames(name): await getAllVideogames()
     
         res.status(200).json(aux)
 
@@ -31,15 +31,16 @@ const getVideogamesById=async(req,res)=>{
 }
 
 const postVideogames=async(req,res)=>{
-    const {name,image,description,platforms,releaseDate,rating,genre}=req.body; //recibo los 'parametros' necesarios para crear un videojuego por forms
+    //const {name,image,description,platforms,releaseDate,rating,genre}=req.body; //recibo los 'parametros' necesarios para crear un videojuego por forms
 
     try {
-        const aux= await createVideogame(name,image,description,platforms,releaseDate,rating,genre)
+        const aux= await createVideogame(req.body)
         
         res.status(200).json(aux)
         
     } catch (error) {
         res.status(400).json({error:error.message})
+
     }
 }
 
