@@ -28,7 +28,7 @@ const games_API=async(id)=>{
 const games_DB=async(id)=>{
     return await Videogame.findAll({
         where:{
-            id:{[Op.iLike]: `${id}`}
+            id:{[Op.eq]: `${id}`}
         },
         include:{
             model: Genres,

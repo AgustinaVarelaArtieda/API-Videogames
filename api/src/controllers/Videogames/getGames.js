@@ -40,13 +40,14 @@ const getNGamesFromAPI=async(num,name)=>{    //recibo el numero de juegos que se
 const getAllVideogames=async(name)=>{
 
     let [resDB, resAPI]=await Promise.all([      //guardo todos los juegos en un ARRAY
-        Videogame.findAll({      //Traigo los juegos que se encuentren en la base de datos
+        Videogame.findAll({                     //Traigo los juegos que se encuentren en la base de datos
             where:{
-                name:{[Op.iLike]: `${name}`}
+                name:{[Op.iLike]: `%${name}%`}          //Usamos % como comodín al principio y al final del valor de name para indicar que estamos buscando juegos cuyos nombres contengan cualquier cantidad de caracteres antes y después del name
             },
             attributes:['id','name','image','rating'],      //los atributos que voy a mostrar en la card
             include:{
                 model: Genres,
+                attributes:['name'],
                 trough:{attributes:[]}
             }
         }),

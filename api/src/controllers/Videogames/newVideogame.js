@@ -2,31 +2,40 @@ const {Videogame,Genres}=require('../../db')  //traigo los modelos desde la BASE
 
 const {Op}=require('sequelize')
 
-const createVideogame= async(data)=>{        //recibo por parametro lo que se ingresa en el form
-    const {name,image,description,platforms,releaseDate,rating,genres}=data
+const createVideogame= async(name,image,description,platforms,releaseDate,rating,genre)=>{        //recibo por parametro lo que se ingresa en el form
+    
+    //para evitar que se cree un juego con algun dato faltante
+    if(!name||!image||!description||!platforms||!releaseDate||!rating||!genre)throw Error('faltan datos')
 
-    const newVideogame=await Videogame.create({
-        name,
-        image,
-        description,
-        platforms,
-        releaseDate,
-        rating,
-        genres
+    let newVideogame= await Videogame.findOne({       //busco si el nombre del juego ya existe en mi DB
+        where:{name:{[Op.iLike]: `${name}`}}
+    })
+
+    //Para evitar que se cree el mismo juego dos veces
+    if(newVideogame) throw Error(`El juego ${name} ya fue creado, su id es ${newVideogame.id}`)
+    
+    //Para crear un nuevo juego
+    newVideogame=await Videogame.create({     //creo un nuevo juego en mi DB
+        name: name,
+        description: description,
+        platforms: platforms,
+        image: image,
+        releaseDate: releaseDate,
+        rating: rating,
+    })
+
+    const genreObj = await Genres.findOne({ where: { name: genre } });
+    await newVideogame.addGenres(genreObj);             //envio los generos ingresados a mi modelo genres
+         
+    newVideogame=await Videogame.findByPk(newVideogame.id, {        //conecto el nuevo juego con mi modelo Genres mediante el id del nuevo juego
+        include: {
+            model: Genres,
+            attributes:['name'],
+            through:{attributes:[]}
+        }
     })
     
-    // if(!name||!image||!description||!platforms||!releaseDate||!rating){  //esto verifica que toda la info requerida sea subida
-    //     return 'faltan datos'
-    // }
-
-    let genresDB= await Genres.findAll({    //para agregar el genero del juego(que viene del modelo GENRES)
-       where:{name:genre}
-   })
-
-  newVideogame.addGenres(genresDB) //agrego un nuevo genres a la DB
-
-  return newVideogame
-    // }
+    return newVideogame
 }
 
 module.exports=createVideogame
