@@ -31,16 +31,16 @@ const getVideogamesById=async(req,res)=>{
 }
 
 const postVideogames=async(req,res)=>{
-    //const {name,image,description,platforms,releaseDate,rating,genre}=req.body; //recibo los 'parametros' necesarios para crear un videojuego por forms
+    const {name,image,description,platforms,releaseDate,rating,genre}=req.body; 
 
     try {
-        const aux= await createVideogame(req.body)
+        const newGame= await createVideogame(name,image,description,platforms,releaseDate,rating,genre)
         
-        res.status(200).json(aux)
+        res.status(200).json(newGame)
         
     } catch (error) {
+        console.log(error)
         res.status(400).json({error:error.message})
-
     }
 }
 
