@@ -10,6 +10,11 @@ export const CLEAN_POST_GAME = 'CLEAN_POST_GAME'
 export const SEARCH_GAMES = 'SEARCH_GAMES'
 
 export const FILTER_GAMES = 'FILTER_GAMES'
+export const FILTER_BY_GENRE='FILTER_BY_GENRE'
+export const FILTER_ORIGIN='FILTER_ORIGIN'
+
+export const ORDER_BY_NAME='ORDER_BY_NAME'
+export const ORDER_BY_RATING='ORDER_BY_RATING'
 
 export const GET_GENRES = 'GET_GENRES'
 // export const CLEAN_GENRES = 'CLEAN_GENRES'
