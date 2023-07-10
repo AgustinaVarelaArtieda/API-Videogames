@@ -12,9 +12,13 @@ const getNGamesFromAPI=async(num,name)=>{    //recibo el numero de juegos que se
     const paginas=Math.ceil(num/20);               //cada pagina de la API muestran 20 juegos, realizo la division para saber la cantidad de paginas que se van a recorrer
     const games=[];                     //creo un array donde voy a pushear los juegos obtenidos
     reqs=[]                             //creo un array para guardar las peticiones a la API
+    
+    if(name){       //si busco un juego por su nombre
+        reqs.push(axios.get(`${url}&search=${name}`)) //realizo la peticion de los juegos a la API, segun el nombre que busco
+    }
 
     for(let i=1;i<=paginas;i++){
-        reqs.push(axios.get(`${url}&search=${name}&page=${i}`)) //realizo la peticion de los juegos a la API
+        reqs.push(axios.get(`${url}&page=${i}`)) //realizo la peticion de los juegos a la API
     }
     
     const data=await axios.all(reqs); //recibo la info de los juegos de la API
