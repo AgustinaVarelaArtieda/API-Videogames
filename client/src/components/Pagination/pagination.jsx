@@ -12,8 +12,8 @@ export default function Pagination({gamesPerPage, allVideogames, paginated}){
         <nav>
             <ul className='pagination'>
                 {pageNumber?.map(number=>(
-                    <li className='number'>
-                        <a onClick={()=>paginated(number)}>{number}</a>
+                    <li className='number' key={number}>
+                        <button onClick={()=>paginated(number)}>{number}</button>
                     </li>
                 ))}
             </ul>
