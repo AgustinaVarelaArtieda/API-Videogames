@@ -2,10 +2,10 @@ const {Videogame,Genres}=require('../../db')  //traigo los modelos desde la BASE
 
 const {Op}=require('sequelize')
 
-const createVideogame= async(name,image,description,platforms,releaseDate,rating,genre)=>{        //recibo por parametro lo que se ingresa en el form
+const createVideogame= async(name,image,description,platforms,released,rating,genres)=>{        //recibo por parametro lo que se ingresa en el form
     
     //para evitar que se cree un juego con algun dato faltante
-    if(!name||!image||!description||!platforms||!releaseDate||!rating||!genre)throw Error('faltan datos')
+    if(!name||!image||!description||!platforms||!released||!rating||!genres)throw Error('faltan datos')
 
     let newVideogame= await Videogame.findOne({       //busco si el nombre del juego ya existe en mi DB
         where:{name:{[Op.iLike]: `${name}`}}
@@ -20,11 +20,11 @@ const createVideogame= async(name,image,description,platforms,releaseDate,rating
         description: description,
         platforms: platforms,
         image: image,
-        releaseDate: releaseDate,
+        released: released,
         rating: rating,
     })
 
-    const genreObj = await Genres.findOne({ where: { name: genre } });
+    const genreObj = await Genres.findOne({ where: { name: genres } });
     await newVideogame.addGenres(genreObj);             //envio los generos ingresados a mi modelo genres
          
     newVideogame=await Videogame.findByPk(newVideogame.id, {        //conecto el nuevo juego con mi modelo Genres mediante el id del nuevo juego

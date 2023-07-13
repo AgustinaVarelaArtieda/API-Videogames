@@ -31,7 +31,7 @@ const getNGamesFromAPI=async(num,name)=>{    //recibo el numero de juegos que se
             name:el.name,   
             image:el.background_image,
             platforms: el.platforms?.map(el=>el.platform.name),
-            releaseDate:el.released,
+            released:el.released,
             rating:el.rating,
             genre:el.genres.map(el=>el.name) 
         };
@@ -67,7 +67,7 @@ const getAllVideogames=async(name)=>{
         return first15
     }
 
-    if(!allGames.length){                       //si no se encuentra el nombre del juego
+    if(!allGames.length){                       //si no se encuentra el nombre del juego//Nunca va a pasar, directamente desde la API, si el nombre no coincide con ningun juego te devuelve todos los juegos
         throw new Error(`No se encontro el juego ${name}`)      //devuelvo un error
     }
     

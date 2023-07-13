@@ -17,7 +17,7 @@ const games_API=async(id)=>{
             description:data.description,
             image:data.background_image,
             platforms:data.platforms?.map(el=>el.platform.name),
-            release_date:data.released,
+            released:data.released,
             rating:data.rating,
             genres:data.genres?.map(el=>el.name)
         }

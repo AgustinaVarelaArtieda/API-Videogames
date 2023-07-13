@@ -31,10 +31,10 @@ const getVideogamesById=async(req,res)=>{
 }
 
 const postVideogames=async(req,res)=>{
-    const {name,image,description,platforms,releaseDate,rating,genre}=req.body; 
+    const {name,image,description,platforms,released,rating,genre}=req.body; 
 
     try {
-        const newGame= await createVideogame(name,image,description,platforms,releaseDate,rating,genre)
+        const newGame= await createVideogame(name,image,description,platforms,released,rating,genre)
         
         res.status(200).json(newGame)
         
