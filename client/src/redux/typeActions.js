@@ -7,7 +7,7 @@ export const GET_GAME_DETAILS = 'GET_GAME_DETAILS'
 export const POST_GAME = 'POST_GAME'
 export const CLEAN_POST_GAME = 'CLEAN_POST_GAME'
 
-export const SEARCH_GAMES = 'SEARCH_GAMES'
+export const SEARCH_GAMES_NAME = 'SEARCH_GAMES_NAME'
 
 export const FILTER_GAMES = 'FILTER_GAMES'
 export const FILTER_BY_GENRE='FILTER_BY_GENRE'
