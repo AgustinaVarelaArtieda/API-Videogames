@@ -9,6 +9,9 @@ import { getVideogames, filterGamesByGenre, filterOrigin, orderByName } from '..
 import Card from '../Card/card'
 import Pagination from '../Pagination/pagination'
 
+//searchbar
+import SearchBar from "../Search Bar/searchBar";
+
 export default function Home (){
     //'Traigo' el estado global
     const dispatch = useDispatch();
@@ -17,12 +20,17 @@ export default function Home (){
     //PAGINACION
     //Creacion de estados LOCALES
     const [currentPage, setCurrentPage]=useState(1)     //Pagina actual y seteo de pagina actual, empieza en 1 porque siempre voy a entrar a la primera pagina
+    
+    // eslint-disable-next-line
     const [gamesPerPage, setGamesPerPage]=useState(15)  //Cuantos games por pagina quiero
+
     //Creacion de constantes para ubicar los juegos segun el indice
     const indexOfLastGame=currentPage*gamesPerPage  
     const indexOfFirstGame=indexOfLastGame-gamesPerPage
+
     //Division de games por pagina
     const currentGames= allVideogames.slice(indexOfFirstGame,indexOfLastGame) //Esta const contiene los personajes que van a tener la pagina actual
+    
     //Funcion para el renderizado del paginado
     function paginated(pageNumber){
         setCurrentPage(pageNumber)
@@ -32,8 +40,9 @@ export default function Home (){
     //Traigo los videojuegos del estado cuando se monte el HOME
     useEffect(()=>{
         dispatch(getVideogames());
-    },[]);  //le paso el ARRAY vacio porque el useEffect no depende de nada
+    },[dispatch]);  //le paso el ARRAY vacio porque el useEffect no depende de nada
 
+    
     //Boton para recargar las paginas/traer todos los juegos de nuevo
     function handleClick(e){
         e.preventDefault();
@@ -54,16 +63,18 @@ export default function Home (){
     }
     //filtrado por
 
+
+
     //ORDEN
     //genero un estado local
     const [nameOrder,setNameOrder]=useState('');
+
     //ordenar por nombre
     function handleSortName(e){
-        const nameOrder=e.target.value
         e.preventDefault();
         dispatch(orderByName(nameOrder))    
         setCurrentPage(1);      //para que empiece a ordenar desde la primera pagina
-        setNameOrder(`Ordenado ${nameOrder}`)   //me modifica el estado local y me renderiza la pagina ordenada.
+        setNameOrder(`Ordenado ${e.target.value}`)   //me modifica el estado local y me renderiza la pagina ordenada.
     }
     //ordenar por rating
 
@@ -77,6 +88,7 @@ export default function Home (){
             <button onClick={e=>{handleClick(e)}}>
                 Volver a cargar todos los juegos
             </button>
+            <SearchBar/>
             {/*Esto de arriba convendria ponerlo en la NAVBAR*/}
 
             {/*Esto de abajo convendria ponerlo en la SEARCHBAR*/}
@@ -105,10 +117,11 @@ export default function Home (){
             {
                 currentGames?.map(el=>{
                     return(
-                        <Card name={el.name} image={el.image} genre={el.genre}/>
+                        <Card key={el.id} name={el.name} image={el.image} genres={el.genres}/>
                     )
                 })
             }
+
             {/*Esto realiza el paginado*/}
             <Pagination gamesPerPage={gamesPerPage} allVideogames={allVideogames.length} paginated={paginated}/>
         
