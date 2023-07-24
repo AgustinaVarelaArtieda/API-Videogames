@@ -76,10 +76,10 @@ export function filterOrigin(payload){
 }
 
 //ORDENAMIENTO
-export function orderByName(payload){
+export function orderByName(order){
     return {
         type:ORDER_BY_NAME,
-        payload
+        payload: order
     }
 }
 

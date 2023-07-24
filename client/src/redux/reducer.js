@@ -4,7 +4,8 @@ const initialState={       //ESTADOS GLOBALES
     videogames:[],
     allGames:[],
     genres:[],
-    detail:[]
+    detail:[],
+    sortOrder:'asc'
 }
 
 function rootReducer(state=initialState, action){
@@ -73,43 +74,50 @@ function rootReducer(state=initialState, action){
             }
         
         case ORDER_BY_NAME:
-            let sortedArr=action.payload==='asc'?
-                state.videogames.sort(function(a,b){    //compara y ordena de forma asc
-                    if(a.name<b.name) return -1
-                    if(a.name>b.name) return 1
-                    return 0
-                }):
-                state.videogames.sort(function(a,b){    //compara y ordena de forma desc
-                    if(a.name<b.name) return 1
-                    if(a.name>b.name) return -1
-                    return 0
-                })
-            return{
-                ...state,
-                videogames:sortedArr
-            }
+            let sortedArr = [...state.videogames]; // Crear una copia del arreglo original
+            let newSortOrder = action.payload; // Mantener el valor del orden seleccionado
 
-        case ORDER_BY_RATING:
-            let ratingArr=action.payload==='asc'?
-                state.videogames.sort(function(a,b){    //compara y ordena de forma asc
-                    if(a.rating<b.rating) return -1
-                    if(a.rating>b.rating) return 1
-                    return 0
-                }):
-                state.videogames.sort(function(a,b){    //compara y ordena de forma desc
-                    if(a.rating<b.rating) return 1
-                    if(a.rating>b.rating) return -1
-                    return 0
-                })
-            return{
+            sortedArr.sort(function(a, b) {
+                if (a.name < b.name) return newSortOrder === 'asc' ? -1 : 1; 
+                if (a.name > b.name) return newSortOrder === 'asc' ? 1 : -1;
+                return 0;
+            });
+
+            return {
                 ...state,
-                videogames:ratingArr
+                videogames: sortedArr,
+                sortOrder: newSortOrder
+            };
+
+            case ORDER_BY_RATING:
+                let sortedArrR = [...state.videogames]; // Crear una copia del arreglo original
+                let newSortOrderR = action.payload; // Mantener el valor del orden seleccionado
+                return{
+                    ...state,
+                    videogames: sortedArrR,
+                    sortOrder: newSortOrderR
+                }
+            default:
+                return state;
             }
+        }
         
+        export default rootReducer
 
-        default:
-            return state;
-    }
-}
-
-export default rootReducer
+        // case ORDER_BY_RATING:
+        //     let ratingArr=action.payload==='asc'?
+        //         state.videogames.sort(function(a,b){    //compara y ordena de forma asc
+        //             if(a.rating<b.rating) return -1
+        //             if(a.rating>b.rating) return 1
+        //             return 0
+        //         }):
+        //         state.videogames.sort(function(a,b){    //compara y ordena de forma desc
+        //             if(a.rating<b.rating) return 1
+        //             if(a.rating>b.rating) return -1
+        //             return 0
+        //         })
+        //     return{
+        //         ...state,
+        //         videogames:ratingArr
+        //     }
+        
