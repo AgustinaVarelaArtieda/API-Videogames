@@ -1,20 +1,21 @@
 import React from "react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
-
-import { Link } from "react-router-dom";
 
 import { getVideogames, filterGamesByGenre, filterOrigin, orderByName } from '../../redux/actions'
 
 import Card from '../Card/card'
 import Pagination from '../Pagination/pagination'
 
-//searchbar
-import SearchBar from "../Search Bar/searchBar";
+//Navbar
+import Nav from "../Nav Bar/navBar";
+
+import style from '../Home Page/homePage.module.css'
 
 export default function Home (){
-    //'Traigo' el estado global
     const dispatch = useDispatch();
+    
+    //'Traigo' el estado global
     const allVideogames = useSelector((state)=>state.videogames);       //Trae todo lo que esta en el estado de videogames(ESTADO GLOBAL)
 
     //PAGINACION
@@ -36,19 +37,11 @@ export default function Home (){
         setCurrentPage(pageNumber)
     }
 
-
     //Traigo los videojuegos del estado cuando se monte el HOME
     useEffect(()=>{
         dispatch(getVideogames());
-    },[dispatch]);  //le paso el ARRAY vacio porque el useEffect no depende de nada
-
-    
-    //Boton para recargar las paginas/traer todos los juegos de nuevo
-    function handleClick(e){
-        e.preventDefault();
-        dispatch(getVideogames());
-    }
-
+    },[dispatch]);
+      
 
     //FILTRADO
     //Filtrado por genero
@@ -56,75 +49,110 @@ export default function Home (){
         const genre=e.target.value;
         dispatch(filterGamesByGenre(genre));
     }
+
     //filtrado por origen(API,DB)
     function handleFilterOrigin(e){
         const origin=e.target.value;
         dispatch(filterOrigin(origin));
     }
-    //filtrado por
-
-
+    
 
     //ORDEN
-    //genero un estado local
-    const [nameOrder,setNameOrder]=useState('');
-
     //ordenar por nombre
     function handleSortName(e){
         e.preventDefault();
-        dispatch(orderByName(nameOrder))    
+        
+        const selectedOrder=e.target.value;
+        
+        dispatch(orderByName(selectedOrder))    
         setCurrentPage(1);      //para que empiece a ordenar desde la primera pagina
-        setNameOrder(`Ordenado ${e.target.value}`)   //me modifica el estado local y me renderiza la pagina ordenada.
     }
     //ordenar por rating
 
+    //Boton para reiniciar los filtros
 
+    const orderByRef = useRef();    //para obtener y modificar el valor del <select>
+    function handleResetFilters(e) {
+        e.preventDefault();     
+        dispatch(getVideogames());      //recargar las paginas/traer todos los juegos de nuevo
+
+        // Restablecer los valores de los filtros a sus configuraciones iniciales
+        orderByName('default');
+        setCurrentPage(1);
+
+        // Establecer el valor del <select> en la opción predeterminada
+        orderByRef.current.value = 'default';
+      }
+    
+    
     return(
-        <div>
-            <h1>VIDEOJUEGOS</h1>
-            <Link to='/videogames'>Crear videojuego</Link>
+        <div className={style.layout}>
 
-            {/*Esto de abajo convendria ponerlo en la NAVBAR*/}
-            <button onClick={e=>{handleClick(e)}}>
-                Volver a cargar todos los juegos
-            </button>
-            <SearchBar/>
-            {/*Esto de arriba convendria ponerlo en la NAVBAR*/}
+            <Nav/>{/*Aqui agrego la barra de Navegación, dentro esta la searchbar*/}
+            
+        <main>
+            {/*Esto de abajo es para los filtros y ordenamientos*/}
+            <div className={style.filters}>
 
-            {/*Esto de abajo convendria ponerlo en la SEARCHBAR*/}
-            <div>
-                {/*Esto de abajo es para los filtros*/}
-                <select onChange={e=>handleSortName(e)}>
-                    <option value='asc'>Acsendente</option>
+                <h2>Filtros</h2>
+
+                {/*Esto de abajo es para resetear los filtros*/}
+                <button className={style.btnFilter} onClick={e=>{handleResetFilters(e)}}>Reset Filters</button>
+
+                {/*Esto de abajo son los ordenamientos*/}
+                {/*Orden por rating*/}
+                <h5>Rating</h5>
+                <div className={style.rating}>
+                    <input type="radio" id="star5" name="rate" value="5"/>
+                    <label htmlFor="star5" title="5"></label>
+                    <input type="radio" id="star4" name="rate" value="4"/>
+                    <label htmlFor="star4" title="4"></label>
+                    <input type="radio" id="star3" name="rate" value="3"/>
+                    <label htmlFor="star3" title="3"></label>
+                    <input type="radio" id="star2" name="rate" value="2"/>
+                    <label htmlFor="star2" title="2"></label>
+                    <input type="radio" id="star1" name="rate" value="1"/>
+                    <label htmlFor="star1" title="1"></label>
+                </div>
+                {/*Orden asc y desc*/}
+                <h5>Orden alfabético</h5>
+                <select onChange={(e)=>handleSortName(e)} ref={orderByRef} defaultValue='default'>
+                    <option value='default' disabled> - </option>
+                    <option value='asc'>Ascendente</option>
                     <option value='desc'>Descendente</option>
                 </select>
+
+                {/*Esto de abajo son los filtros*/}
+                {/*Filtro por género*/}
+                <h5>Género</h5>
                 <select onChange={e=>handleFilterGenre(e)}>
                     {/*Esto se puede hacer con un map para pasar todos los generos existentes*/}
                     <option value='All'>Todos</option>
                     <option value='aca se le pasa el mismo valor que tiene en la API'>Action</option>
-                    <option value='Adventure'>Adventure,etccc</option>
+                    <option value='Adventure'>Adventure</option>
                 </select>
+                {/*Filtro por origen*/}
+                <h5>Origen</h5>
                 <select onChange={e=>handleFilterOrigin(e)}>
                     <option value='All'>Todos</option>
                     <option value='API'>Datos de la API(existentes)</option>
                     <option value='DB'>Datos de la DB</option>
                 </select>
-                {/*Esto de arriba es para los filtros*/}
             </div>
-            {/*Esto de arriba convendria ponerlo en la SEARCHBAR*/}
             
             {/*Esto trae las cards al home*/}
-            {
-                currentGames?.map(el=>{
+            <div className={style.cards}>
+            {currentGames?.map(el=>{
                     return(
-                        <Card key={el.id} name={el.name} image={el.image} genres={el.genres}/>
-                    )
-                })
-            }
+                        <Card key={el.id} name={el.name} image={el.image} genres={el.genres} rating={el.rating}/>
+            )})}
+            </div>
+        </main>
 
+            <footer>
             {/*Esto realiza el paginado*/}
-            <Pagination gamesPerPage={gamesPerPage} allVideogames={allVideogames.length} paginated={paginated}/>
-        
+                <Pagination gamesPerPage={gamesPerPage} allVideogames={allVideogames.length} paginated={paginated}/>
+            </footer>
         </div>
     )
 }

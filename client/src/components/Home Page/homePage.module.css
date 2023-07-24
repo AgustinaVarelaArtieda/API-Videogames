@@ -1,0 +1,110 @@
+.layout{
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.layout main{
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction:row;
+}
+
+.cards {
+    width: 90%;
+    height: 90%;
+    margin:0.4rem;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+}
+
+.filters {
+    width: 1.5fr;
+    display: flex;
+    flex-direction: column;
+    margin:0.5rem auto;
+    border-right-color: blue;
+    border-right-width: .5px;
+    border-right-style: solid;
+    justify-content: top;
+    
+}
+.filters select{
+    width: 80%;
+    height: 1.5rem;
+    margin-bottom: .5rem;
+    margin-left: 1rem;
+    text-align: center;
+}
+
+.filters h2{
+    font-size: 1.25rem;
+    text-align: center;
+    margin-bottom: 1rem;
+}
+
+.filters h5{
+  font-size: 1rem;
+  text-align: center;
+  margin-bottom: .5rem;
+}
+
+.filters button{
+    width: 80%;
+    height: 2rem;
+    margin-left: 1rem;
+    background-color: #e58e09;
+}
+
+/*Esto es para el orden por rating*/
+.rating{
+  display: flex;
+  flex-direction: row-reverse; /* Agregado para invertir el orden de los elementos */
+  justify-content: center;
+  position: relative;
+  height: 2rem;
+  line-height: 2rem;
+  font-size: 2rem;
+  margin-bottom: .5rem;
+}
+
+  .rating:not(:checked) > input { /*para que no se muestren las extrellas pintada si no esta seleccionada*/
+    position: absolute;
+    appearance: none;
+  }
+  
+  .rating:not(:checked) > label { /*para que las estrellas que no estén seleccionadas tengan un cursor de tipo puntero, un color gris y no tengan ningún contenido antes de ellos.*/
+    float:center ;
+    cursor: pointer;
+    color: #666;
+  }
+  
+  .rating:not(:checked) > label:before {  /*le da la forma de estrella*/
+    content: '★';
+  }
+  
+  /*para que cuando se pasa el cursor sobre una estrella o se selecciona una estrella, el color del texto de las estrellas cambie*/
+  .rating > input:checked + label:hover,
+  .rating > input:checked + label:hover ~ label,
+  .rating > input:checked ~ label:hover,
+  .rating > input:checked ~ label:hover ~ label,
+  .rating > label:hover ~ input:checked ~ label {
+    color: #e58e09;
+  }
+  
+  /*para que cuando se pasa el cursor sobre una estrella que no está seleccionada, el color del texto de las estrellas cambie a otro color*/
+  .rating:not(:checked) > label:hover,
+  .rating:not(:checked) > label:hover ~ label {
+    color: #ff9e0b;
+  }
+  
+  /*Le otorga el color final a la estrella seleccionada*/
+  .rating > input:checked ~ label {
+    color: #ffa723;
+  }
