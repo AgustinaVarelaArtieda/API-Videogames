@@ -1,23 +1,29 @@
 import React from "react";  
 
-import { useNavigate, useParams } from "react-router-dom";
+//import { useNavigate, useParams } from "react-router-dom";
 
-export default function Card({name, image, genres}){
-    const navigate=useNavigate()
-    const { key }=useParams()
+import style from '../Card/card.module.css'
 
-    const handleClick = (e) => {
+export default function Card({name, image, genres, rating}){
+    // const navigate=useNavigate()
+    // const { key }=useParams()
 
-        navigate(`/home/${key}`)
-    }
+    // const handleClick = (e) => {
+
+    //     navigate('/home/'+key)
+        
+    // }
 
     return(
-        <div>
-            <h3>{name}</h3>
-           
-            <img src={image} alt={name} onClick={(e)=>handleClick(e)}/>
-            
-            <h4>{genres}</h4>
+        <div className={style.card}>
+            <div className={style.card2}>
+                <h3>{name}</h3>
+                <img src={image} alt={name}/>
+                {
+                    genres && genres.map((name) => <h4>{`${ name }, `} </h4>)
+                }
+                <p>★ {rating}</p>
+            </div>
         </div>
     )
 }
