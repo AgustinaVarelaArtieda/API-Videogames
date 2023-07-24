@@ -1,0 +1,50 @@
+.group {
+    display: flex;
+    align-items: center;
+    position: relative;
+    width: 80%;
+    height: 2rem;
+  }
+  
+  .group input {
+    line-height: 1.75rem;
+    padding-left: .5rem;
+    border: .10rem solid transparent;
+    border-radius: 8px 0 0 8px;
+    outline: none;
+    background-color: #f3f3f4;
+    color: #0d0c22;
+    transition: .3s ease;
+  }
+  
+  .group input::placeholder {
+    color: #9e9ea7;
+  }
+  
+  .group input:focus,
+  .group input:hover {
+    outline: none;
+    border-color: rgba(235, 49, 120, 0.4);
+    background-color: #fff;
+    box-shadow: 0 0 0 4px rgb(234 76 137 / 15%);
+  }
+
+  .btnS {
+    line-height: 1.75rem;
+    font-size: .75rem;
+    cursor: pointer;
+    border: .10rem solid transparent;
+    border-radius: 0 8px 8px 0;
+    outline: none;
+    background-color: #f3f3f4;
+    color: #0d0c22;
+    transition: .3s ease;
+  }
+
+  .btnS:focus,
+  .btnS:hover {
+    outline: none;
+    border-color: rgba(234, 76, 137, 0.4);
+    background-color: #fff;
+    box-shadow: 0 0 0 4px rgb(234 76 137 / 20%);
+  }

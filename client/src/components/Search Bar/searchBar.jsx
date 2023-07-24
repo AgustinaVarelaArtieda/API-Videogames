@@ -4,6 +4,8 @@ import { useDispatch } from "react-redux";
 
 import { getGameByName } from "../../redux/actions";
 
+import style from '../Search Bar/searchBar.module.css'
+
 export default function SearchBar(){
     const dispatch=useDispatch()
 
@@ -24,9 +26,9 @@ export default function SearchBar(){
     }
 
     return(
-        <div>
+        <div className={style.group}>
             <input type="text" placeholder='Buscar...' onChange={(e)=>handleInputChange(e)}/>
-            <button type='submit' onClick={(e)=>handleSubmit(e)}>Buscar</button>
+            <button className={style.btnS} type='submit' onClick={(e)=>handleSubmit(e)}>🔍︎</button>
         </div>
     )
 }
