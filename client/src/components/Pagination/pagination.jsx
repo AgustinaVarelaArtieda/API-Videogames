@@ -1,5 +1,7 @@
 import React from "react";
 
+import style from '../Pagination/pagination.module.css'
+
 //Este componente renderiza los numeritos en si
 export default function Pagination({gamesPerPage, allVideogames, paginated}){
     const pageNumber=[]
@@ -9,11 +11,11 @@ export default function Pagination({gamesPerPage, allVideogames, paginated}){
     }
 
     return(
-        <nav>
+        <nav className={style.page}>
             <ul className='pagination'>
                 {pageNumber?.map(number=>(
                     <li className='number' key={number}>
-                        <button onClick={()=>paginated(number)}>{number}</button>
+                        <button className={style.btn} onClick={()=>paginated(number)}>{number}</button>
                     </li>
                 ))}
             </ul>
