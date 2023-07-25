@@ -2,13 +2,12 @@ import React from "react";
 import { useState, useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-import { getVideogames, filterGamesByGenre, filterOrigin, orderByName } from '../../redux/actions'
+import { getVideogames, filterGamesByGenre, filterOrigin, orderByName, orderByRating } from '../../redux/actions'
 
 import Card from '../Card/card'
 import Pagination from '../Pagination/pagination'
-
-//Navbar
 import Nav from "../Nav Bar/navBar";
+import Loading from "../Loading Page/loadingPage";
 
 import style from '../Home Page/homePage.module.css'
 
@@ -42,6 +41,17 @@ export default function Home (){
         dispatch(getVideogames());
     },[dispatch]);
       
+    //LOADING
+    const [loading, setLoading] = useState(true);       //para controlar si se debe mostrar LoadingPage o las cartas
+
+    useEffect(()=>{
+        const timer=setTimeout(()=>{        //temporizador para desactivar la loading luego de un segundo y medio
+            setLoading(false)
+        },30700);
+        return ()=>{
+            clearTimeout(timer)
+        }
+    },[])
 
     //FILTRADO
     //Filtrado por genero
@@ -66,24 +76,32 @@ export default function Home (){
         
         dispatch(orderByName(selectedOrder))    
         setCurrentPage(1);      //para que empiece a ordenar desde la primera pagina
+    
+        orderByRefR.current.value = 'default';  //esto setea el orden por rating
     }
     //ordenar por rating
+    function handleSortRating(e) {
+        const selectedRating = e.target.value;
+        dispatch(orderByRating(selectedRating));
 
+        setCurrentPage(1); //esto redirige a la pagina 1
+
+        orderByRefA.current.value = 'default';  //esto setea el orden alfabetico
+      }
+
+      const orderByRefR= useRef();     //para obtener y modificar el valor del <select> del orden por rating
+      const orderByRefA = useRef();    //para obtener y modificar el valor del <select> del orden Alfabetico
     //Boton para reiniciar los filtros
-
-    const orderByRef = useRef();    //para obtener y modificar el valor del <select>
     function handleResetFilters(e) {
         e.preventDefault();     
         dispatch(getVideogames());      //recargar las paginas/traer todos los juegos de nuevo
 
-        // Restablecer los valores de los filtros a sus configuraciones iniciales
-        orderByName('default');
-        setCurrentPage(1);
+        setCurrentPage(1); //esto redirige a la pagina 1
 
         // Establecer el valor del <select> en la opción predeterminada
-        orderByRef.current.value = 'default';
+        orderByRefA.current.value = 'default';
+        orderByRefR.current.value = 'default';
       }
-    
     
     return(
         <div className={style.layout}>
@@ -102,21 +120,15 @@ export default function Home (){
                 {/*Esto de abajo son los ordenamientos*/}
                 {/*Orden por rating*/}
                 <h5>Rating</h5>
-                <div className={style.rating}>
-                    <input type="radio" id="star5" name="rate" value="5"/>
-                    <label htmlFor="star5" title="5"></label>
-                    <input type="radio" id="star4" name="rate" value="4"/>
-                    <label htmlFor="star4" title="4"></label>
-                    <input type="radio" id="star3" name="rate" value="3"/>
-                    <label htmlFor="star3" title="3"></label>
-                    <input type="radio" id="star2" name="rate" value="2"/>
-                    <label htmlFor="star2" title="2"></label>
-                    <input type="radio" id="star1" name="rate" value="1"/>
-                    <label htmlFor="star1" title="1"></label>
-                </div>
+                <select onChange={(e)=>handleSortRating(e)} ref={orderByRefR} defaultValue='default'>
+                    <option value='default' disabled> - </option>
+                    <option value='asc'>Mayor ★</option>
+                    <option value='desc'>Menor ★</option>
+                </select>
+                
                 {/*Orden asc y desc*/}
                 <h5>Orden alfabético</h5>
-                <select onChange={(e)=>handleSortName(e)} ref={orderByRef} defaultValue='default'>
+                <select onChange={(e)=>handleSortName(e)} ref={orderByRefA} defaultValue='default'>
                     <option value='default' disabled> - </option>
                     <option value='asc'>Ascendente</option>
                     <option value='desc'>Descendente</option>
@@ -140,12 +152,15 @@ export default function Home (){
                 </select>
             </div>
             
-            {/*Esto trae las cards al home*/}
             <div className={style.cards}>
-            {currentGames?.map(el=>{
-                    return(
-                        <Card key={el.id} name={el.name} image={el.image} genres={el.genres} rating={el.rating}/>
-            )})}
+            {loading ? (
+                <Loading />     /*Esto trae la loadingPage*/
+            ) : (
+                 currentGames?.map(el => {      /*Esto trae las cards al home*/
+                    return (
+                        <Card key={el.id} name={el.name} image={el.image} genres={el.genres} rating={el.rating} />
+                    );
+                }))}
             </div>
         </main>
 
@@ -156,3 +171,17 @@ export default function Home (){
         </div>
     )
 }
+
+/*Esto es para el filtro por rating si llego a hacerlo
+<div className={style.rating}>
+                    <input type="radio" id="star5" name="rate" value="5" onChange={handleSortRating}/>
+                    <label htmlFor="star5" title="5"></label>
+                    <input type="radio" id="star4" name="rate" value="4" onChange={handleSortRating}/>
+                    <label htmlFor="star4" title="4"></label>
+                    <input type="radio" id="star3" name="rate" value="3" onChange={handleSortRating}/>
+                    <label htmlFor="star3" title="3"></label>
+                    <input type="radio" id="star2" name="rate" value="2" onChange={handleSortRating}/>
+                    <label htmlFor="star2" title="2"></label>
+                    <input type="radio" id="star1" name="rate" value="1" onChange={handleSortRating}/>
+                    <label htmlFor="star1" title="1"></label>
+</div>*/
