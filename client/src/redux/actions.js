@@ -83,9 +83,9 @@ export function orderByName(order){
     }
 }
 
-export function orderByRating(payload){
+export function orderByRating(rating){
     return {
         type:ORDER_BY_RATING,
-        payload
+        payload:rating
     }
 }

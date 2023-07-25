@@ -90,12 +90,25 @@ function rootReducer(state=initialState, action){
             };
 
             case ORDER_BY_RATING:
-                let sortedArrR = [...state.videogames]; // Crear una copia del arreglo original
-                let newSortOrderR = action.payload; // Mantener el valor del orden seleccionado
-                return{
+                const selectedRating = action.payload;
+                let sortedVideogames = [...state.videogames];
+
+                sortedVideogames.sort((a, b) => {
+                const ratingA = parseFloat(a.rating);
+                const ratingB = parseFloat(b.rating);
+
+                if (selectedRating === 'desc') {
+                    return ratingA - ratingB;
+                } else if (selectedRating === 'asc') {
+                    return ratingB - ratingA;
+                }
+                    return 0;
+                });
+
+                return {
                     ...state,
-                    videogames: sortedArrR,
-                    sortOrder: newSortOrderR
+                    videogames: sortedVideogames,
+                    sortOrder: selectedRating
                 }
             default:
                 return state;
