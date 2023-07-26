@@ -45,9 +45,6 @@ const getAllVideogames=async(name)=>{
 
     let [resDB, resAPI]=await Promise.all([      //guardo todos los juegos en un ARRAY
         Videogame.findAll({                     //Traigo los juegos que se encuentren en la base de datos
-            where:{
-                name:{[Op.iLike]: `%${name}%`}          //Usamos % como comodín al principio y al final del valor de name para indicar que estamos buscando juegos cuyos nombres contengan cualquier cantidad de caracteres antes y después del name
-            },
             attributes:['id','name','image','rating'],      //los atributos que voy a mostrar en la card
             include:{
                 model: Genres,
@@ -60,9 +57,11 @@ const getAllVideogames=async(name)=>{
 
     resDB=resDB?.map((g) => g.toJSON())     //si hay juegos en la DB los convierto a un formato .JSON
     
-    const allGames=[...resDB,...resAPI]             //creo un array con todos los juegos
+    let allGames=[...resDB,...resAPI]             //creo un array con todos los juegos
 
     if(name){                                   //si se busca por nombre
+        allGames=allGames.filter(el=>el.name.toLowerCase().includes(name.toLowerCase()))
+
         const first15=allGames.slice(0,15);        //devuelvo los primeros 15 cortando el array
         return first15
     }
@@ -77,7 +76,3 @@ const getAllVideogames=async(name)=>{
 module.exports={
     getAllVideogames
 }
-
-
-    
-    
