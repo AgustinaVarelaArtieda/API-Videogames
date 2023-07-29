@@ -2,7 +2,7 @@ import React from "react";
 import { useState, useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-import { getVideogames, filterGamesByGenre, filterOrigin, orderByName, orderByRating } from '../../redux/actions'
+import { getVideogames, filterGamesByGenre, filterOrigin, orderByName, orderByRating, getGenres } from '../../redux/actions'
 
 import Card from '../Card/card'
 import Pagination from '../Pagination/pagination'
@@ -14,8 +14,9 @@ import style from '../Home Page/homePage.module.css'
 export default function Home (){
     const dispatch = useDispatch();
     
-    //'Traigo' el estado global
+    //'Traigo' los estados globales
     const allVideogames = useSelector((state)=>state.videogames);       //Trae todo lo que esta en el estado de videogames(ESTADO GLOBAL)
+    const allGenres=useSelector((state)=>state.genres)
 
     //PAGINACION
     //Creacion de estados LOCALES
@@ -47,27 +48,46 @@ export default function Home (){
     useEffect(()=>{
         const timer=setTimeout(()=>{        //temporizador para desactivar la loading luego de un segundo y medio
             setLoading(false)
-        },30700);
+        },1700);
         return ()=>{
             clearTimeout(timer)
         }
     },[])
 
-    //FILTRADO
+    //FILTRADO: forma de hacerlo usando estados locales
+    const filterOrig= useRef()
+    const filterGen= useRef()
+
     //Filtrado por genero
+    //Para poder renderizar los generos, los despacho
+    useEffect(()=>{
+        dispatch(getGenres())
+    },[dispatch]);
+
     function handleFilterGenre(e){
         const genre=e.target.value;
+        
         dispatch(filterGamesByGenre(genre));
+
+        setCurrentPage(1);
     }
 
     //filtrado por origen(API,DB)
     function handleFilterOrigin(e){
+        e.preventDefault();
+
         const origin=e.target.value;
+
         dispatch(filterOrigin(origin));
+
+        setCurrentPage(1);
     }
     
 
     //ORDEN
+    const orderByRefR= useRef();     //para obtener y modificar el valor del <select> del orden por rating
+    const orderByRefA = useRef();    //para obtener y modificar el valor del <select> del orden Alfabetico
+
     //ordenar por nombre
     function handleSortName(e){
         e.preventDefault();
@@ -79,7 +99,7 @@ export default function Home (){
     
         orderByRefR.current.value = 'default';  //esto setea el orden por rating
     }
-    //ordenar por rating
+    //ordenar por rating    
     function handleSortRating(e) {
         const selectedRating = e.target.value;
         dispatch(orderByRating(selectedRating));
@@ -89,31 +109,30 @@ export default function Home (){
         orderByRefA.current.value = 'default';  //esto setea el orden alfabetico
       }
 
-      const orderByRefR= useRef();     //para obtener y modificar el valor del <select> del orden por rating
-      const orderByRefA = useRef();    //para obtener y modificar el valor del <select> del orden Alfabetico
-    //Boton para reiniciar los filtros
+    //Boton para reiniciar los filtros y ordenamientos
     function handleResetFilters(e) {
         e.preventDefault();     
         dispatch(getVideogames());      //recargar las paginas/traer todos los juegos de nuevo
 
         setCurrentPage(1); //esto redirige a la pagina 1
 
-        // Establecer el valor del <select> en la opción predeterminada
+        // Establecer el valor del <select> en la opción predeterminada en los ordenamientos
         orderByRefA.current.value = 'default';
         orderByRefR.current.value = 'default';
+
+        //Establece el filtro de origen en su estado inicial
+        filterOrig.current.value = 'All';
       }
     
     return(
         <div className={style.layout}>
-
             <Nav/>{/*Aqui agrego la barra de Navegación, dentro esta la searchbar*/}
+            <hr/>
             
         <main>
             {/*Esto de abajo es para los filtros y ordenamientos*/}
             <div className={style.filters}>
-
                 <h2>Filtros</h2>
-
                 {/*Esto de abajo es para resetear los filtros*/}
                 <button className={style.btnFilter} onClick={e=>{handleResetFilters(e)}}>Reset Filters</button>
 
@@ -127,7 +146,7 @@ export default function Home (){
                 </select>
                 
                 {/*Orden asc y desc*/}
-                <h5>Orden alfabético</h5>
+                <h5>Orden <br/> alfabético</h5>
                 <select onChange={(e)=>handleSortName(e)} ref={orderByRefA} defaultValue='default'>
                     <option value='default' disabled> - </option>
                     <option value='asc'>Ascendente</option>
@@ -137,18 +156,19 @@ export default function Home (){
                 {/*Esto de abajo son los filtros*/}
                 {/*Filtro por género*/}
                 <h5>Género</h5>
-                <select onChange={e=>handleFilterGenre(e)}>
+                <select onChange={e=>handleFilterGenre(e)} ref={filterGen} defaultValue='All'>
                     {/*Esto se puede hacer con un map para pasar todos los generos existentes*/}
                     <option value='All'>Todos</option>
-                    <option value='aca se le pasa el mismo valor que tiene en la API'>Action</option>
-                    <option value='Adventure'>Adventure</option>
+                    {allGenres.map((genre)=>(
+                            <option value={genre}>{genre}</option>
+                        ))}
                 </select>
                 {/*Filtro por origen*/}
                 <h5>Origen</h5>
-                <select onChange={e=>handleFilterOrigin(e)}>
+                <select onChange={e=>handleFilterOrigin(e)} ref={filterOrig} defaultValue='All'>
                     <option value='All'>Todos</option>
-                    <option value='API'>Datos de la API(existentes)</option>
-                    <option value='DB'>Datos de la DB</option>
+                    <option value='API'>Juegos de la API</option>
+                    <option value='DB'>Juegos de la DB</option>
                 </select>
             </div>
             
@@ -156,18 +176,23 @@ export default function Home (){
             {loading ? (
                 <Loading />     /*Esto trae la loadingPage*/
             ) : (
-                 currentGames?.map(el => {      /*Esto trae las cards al home*/
-                    return (
+                currentGames?.length===0 ? (
+                    <h2 className={style.noGames}>No hay juegos de ese género</h2>
+                  ) : (
+                    currentGames.map(el => {
+                      return (
                         <Card key={el.id} name={el.name} image={el.image} genres={el.genres} rating={el.rating} />
-                    );
-                }))}
-            </div>
+                      );
+                    })
+                  )
+                )}
+              </div>
         </main>
-
-            <footer>
+        <hr/>
+        <footer>
             {/*Esto realiza el paginado*/}
-                <Pagination gamesPerPage={gamesPerPage} allVideogames={allVideogames.length} paginated={paginated}/>
-            </footer>
+                <Pagination currentPage={currentPage} gamesPerPage={gamesPerPage} allVideogames={allVideogames.length} paginated={paginated}/>
+        </footer>
         </div>
     )
 }
