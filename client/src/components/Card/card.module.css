@@ -3,11 +3,13 @@
     flex-direction: column;
     align-items: center;
     flex-basis: 15rem;
+    width: 15rem;
+    height: 20rem;
 
     box-sizing: border-box;
     margin: .5rem;
 
-    background-image: linear-gradient(315deg, #03a9f4, #ff0058);
+    background-image: linear-gradient(315deg, rgb(38, 252, 181), #8b00ff);
     border-radius: 1.5rem;
     transition: all .3s;
 }
@@ -19,7 +21,11 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    flex-basis: 16rem;
+    
+    width: 15rem;
+    height: 20rem;
+
+    overflow: hidden;
 
     background-color: rgba(0,0,0,0.6);
     border-radius: 1.5rem;
@@ -32,38 +38,43 @@
    }
 
    .card2:hover img{
-    transform: scale(1.15) translateY(-1.8rem);
-   }
+    width: 85%;
+    transform: scale(1.15);
+    transform-origin: center center;
+}
 
    .card2:hover h3{
-    opacity: 0;
+    opacity: 70%;
+    color: aqua;
    }
 
    .card2:hover h4{
     opacity: 0;
+    height: 0;
    }
 
    .card2:hover p{
     opacity: 100%;
-    transform: scale(2) translateY(-.4rem);
+    transform: scale(2) translateY(-1.4rem);
    }
 
 .card2 img{
-    width:80%;
+    width:90%;
     height:80%;
+    object-fit: cover;
+
     border-radius: 1rem;
 }
 
 .card2 h3{
     color: aliceblue;
-}
-
-.card2 h4{
-    color: aliceblue;
-    transform: translateY(-.4rem);
+    width: 80%;
+    flex-shrink: 1;
+    text-align: center;
 }
 
 .card2 p{
+    height: 0;
     opacity: 0%;
     color: aliceblue;
     transform: translateY(-1.8rem);
