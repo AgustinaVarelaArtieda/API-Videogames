@@ -23,9 +23,13 @@ export default function Nav(){
 
             <NavLink to='/home' style={{textDecoration:'none'}}><h1>VIDEOGAMES</h1></NavLink>
             
-            {/*<NavLink to='/about'><button className={style.btn}>About</button></NavLink>*/}
+            <div className={style.btnCont}>
 
-            <NavLink to='/videogames'><button className={style.btn}>Create</button></NavLink>
+                <NavLink to='/about'><button className={style.btn}>About</button></NavLink>
+
+                <NavLink to='/videogames'><button className={style.btn}>Create</button></NavLink>
+
+            </div>
 
             <div>
                 {mostrarBusqueda&&<SearchBar/>}
