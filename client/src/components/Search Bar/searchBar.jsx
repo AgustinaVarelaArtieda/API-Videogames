@@ -22,12 +22,12 @@ export default function SearchBar(){
     function handleSubmit(e){
         e.preventDefault()
         dispatch(getGameByName(name))
-        setName("")//Para 'limpiar' la barra de busqueda
+        setName('')//Para 'limpiar' la barra de busqueda(no funciona :c)
     }
 
     return(
         <div className={style.group}>
-            <input type="text" placeholder='Buscar...' onChange={(e)=>handleInputChange(e)}/>
+            <input type="text" placeholder='Buscar...' onChange={(e)=>handleInputChange(e)}></input>
             <button className={style.btnS} type='submit' onClick={(e)=>handleSubmit(e)}>🔍︎</button>
         </div>
     )
