@@ -5,7 +5,8 @@ const initialState={       //ESTADOS GLOBALES
     allGames:[],
     genres:[],
     detail:[],
-    sortOrder:'asc'
+    sortOrder:'asc',
+    filter:'All'
 }
 
 function rootReducer(state=initialState, action){
@@ -40,37 +41,36 @@ function rootReducer(state=initialState, action){
                 ...state,
             }
 
-        case FILTER_BY_GENRE:       //revisar esto, no funca bien
-            const allGames=state.allGames
-            const genreFilteres=action.payload==='All'? allGames:allGames.filter(el=>el.status===action.payload)
+        case FILTER_BY_GENRE:       
+            const allGames = state.allGames;
+            const genreFiltered = action.payload === "All" ? allGames : allGames.filter(el => {
+                if (Array.isArray(el.genres)) {
+                    return el.genres.find(genre => genre.name === action.payload);
+                } else {
+                    return el.genres === action.payload;
+                }
+            });
+            
             return{
                 ...state,
-                videogames:genreFilteres
+                videogames:genreFiltered,
             };
-
-            // case GET_GAME_GENRE: {
-            //     const { payload: { genre, videogames } } = action;
-            //     const gamesByGenre = videogames.filter(game => game.genres.filter(el => el.name === genre).length);
-    
-            //     return{
-            //         ...state,
-            //         videogames: gamesByGenre,
-            //     }
-            // }
         
-        case FILTER_ORIGIN:    //revisar esto tambien
-            let originFilteres= [...(state.allGames.length? state.allGames : state.videogames)]
+        case FILTER_ORIGIN:    
+            let originFilteres= [...state.videogames]
+            let newFilter=action.payload
             
             if(action.payload==='All'){
-                originFilteres=[...state.videogames]
+                originFilteres=[...state.allGames]
             }else if(action.payload==='DB'){
-                originFilteres=state.videogames.filter((game)=>isNaN(game.id))
+                originFilteres=state.allGames.filter((game)=>isNaN(game.id))
             }else if(action.payload==='API'){
-                originFilteres=state.videogames.filter((game)=>!isNaN(game.id))
+                originFilteres=state.allGames.filter((game)=>!isNaN(game.id))
             }
             return{
                 ...state,
-                videogames: originFilteres
+                videogames: originFilteres,
+                filter:newFilter
             }
         
         case ORDER_BY_NAME:
@@ -78,10 +78,11 @@ function rootReducer(state=initialState, action){
             let newSortOrder = action.payload; // Mantener el valor del orden seleccionado
 
             sortedArr.sort(function(a, b) {
-                if (a.name < b.name) return newSortOrder === 'asc' ? -1 : 1; 
-                if (a.name > b.name) return newSortOrder === 'asc' ? 1 : -1;
+                if (a.name.toLowerCase() < b.name.toLowerCase()) return newSortOrder === 'asc' ? -1 : 1; 
+                if (a.name.toLowerCase() > b.name.toLowerCase()) return newSortOrder === 'asc' ? 1 : -1;
                 return 0;
             });
+            console.log(newSortOrder)
 
             return {
                 ...state,
@@ -116,21 +117,3 @@ function rootReducer(state=initialState, action){
         }
         
         export default rootReducer
-
-        // case ORDER_BY_RATING:
-        //     let ratingArr=action.payload==='asc'?
-        //         state.videogames.sort(function(a,b){    //compara y ordena de forma asc
-        //             if(a.rating<b.rating) return -1
-        //             if(a.rating>b.rating) return 1
-        //             return 0
-        //         }):
-        //         state.videogames.sort(function(a,b){    //compara y ordena de forma desc
-        //             if(a.rating<b.rating) return 1
-        //             if(a.rating>b.rating) return -1
-        //             return 0
-        //         })
-        //     return{
-        //         ...state,
-        //         videogames:ratingArr
-        //     }
-        

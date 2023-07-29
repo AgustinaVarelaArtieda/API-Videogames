@@ -61,17 +61,17 @@ export function postGame(payload){
 }
 
 //FILTROS
-export function filterGamesByGenre(payload){
+export function filterGamesByGenre(genre){
     return {
         type: FILTER_BY_GENRE,
-        payload
+        payload:genre
     }
 }
 
-export function filterOrigin(payload){
+export function filterOrigin(origin){
     return {
         type:FILTER_ORIGIN,
-        payload
+        payload: origin
     }
 }
 
